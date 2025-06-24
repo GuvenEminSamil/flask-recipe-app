@@ -132,3 +132,32 @@ def github_callback():
     flash("Logged in with GitHub.", 'success')
     print("Session on callback:", dict(session))
     return redirect(url_for("profile"))
+
+
+@current_app.route("/login/yandex")
+def yandex_login():
+    session.permanent = True
+    redirect_uri = "http://localhost:5000/login/yandex/callback"
+    return oauth.yandex.authorize_redirect(redirect_uri)
+
+@current_app.route("/login/yandex/callback")
+def yandex_callback():
+    token = oauth.yandex.authorize_access_token()
+    resp = oauth.yandex.get("", token=token)
+    profile = resp.json()
+
+    email = profile.get("default_email") or profile.get("email") or f"{profile['login']}@yandex.com"
+    username = profile.get("real_name") or profile.get("login")
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        user = User(username=username, email=email,
+                    password_hash=generate_password_hash(os.urandom(16).hex()))
+        db.session.add(user)
+        db.session.commit()
+
+        session["user_id"] = user.id
+        session["username"] = user.username
+        flash("Logged in with Yandex.", 'success')
+        return redirect(url_for("profile"))
+    return redirect(url_for("login"))

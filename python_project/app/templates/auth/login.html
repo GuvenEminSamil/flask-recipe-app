@@ -11,7 +11,10 @@
     </div>
     {{ form.submit(class="btn btn-primary") }}
     <div class="text-center mt-3">
-    <a href="{{ url_for('github_login') }}" class="btn btn-dark">Login with GitHub</a>
+      <a href="{{ url_for('github_login') }}" class="btn btn-dark">Login with GitHub</a>
+    </div>
+    <div class="text-center mt-2">
+      <a href="{{ url_for('yandex_login') }}" class="btn btn-warning">Login with Yandex</a>
     </div>
 
   </form>
