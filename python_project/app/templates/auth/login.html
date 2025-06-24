@@ -10,5 +10,9 @@
       {{ form.password.label }} {{ form.password(class="form-control") }}
     </div>
     {{ form.submit(class="btn btn-primary") }}
+    <div class="text-center mt-3">
+    <a href="{{ url_for('github_login') }}" class="btn btn-dark">Login with GitHub</a>
+    </div>
+
   </form>
 {% endblock %}

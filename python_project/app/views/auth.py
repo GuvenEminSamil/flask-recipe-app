@@ -1,9 +1,10 @@
-from flask import render_template, redirect, url_for, request, flash, session, abort
+from flask import render_template, redirect, url_for, request, flash, session, abort, current_app
 from flask.views import MethodView
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms.auth_forms import ProfileForm
+import os
 
-from app import db
+from app import db, oauth
 from app.models.user import User
 from app.forms.auth_forms import RegisterForm, LoginForm
 
@@ -101,3 +102,33 @@ class ProfileView(MethodView):
             return redirect(url_for("profile"))
 
         return render_template("auth/profile.html", form=form)
+
+
+
+@current_app.route("/login/github")
+def github_login():
+    session.permanent = True
+    redirect_uri = "http://localhost:5000/login/github/callback"
+    print("Session before redirect:", dict(session))
+    return oauth.github.authorize_redirect(redirect_uri)
+
+@current_app.route("/login/github/callback")
+def github_callback():
+    token = oauth.github.authorize_access_token()
+    resp = oauth.github.get("user", token=token)
+    profile = resp.json()
+
+    github_email = profile.get("email") or profile.get("login") + "@github.com"
+    user = User.query.filter_by(email=github_email).first()
+
+    if not user:
+        user = User(username=profile.get("login"), email=github_email,
+        password_hash = generate_password_hash(os.urandom(16).hex()))
+        db.session.add(user)
+        db.session.commit()
+
+    session["user_id"] = user.id
+    session["username"] = user.username
+    flash("Logged in with GitHub.", 'success')
+    print("Session on callback:", dict(session))
+    return redirect(url_for("profile"))
