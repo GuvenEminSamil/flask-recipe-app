@@ -43,6 +43,7 @@ def create_app(config_class="config.Config"):
         db.create_all()
 
         from app.views.auth import RegisterView, LoginView, LogoutView, ProfileView, github_login, github_callback, yandex_login, yandex_callback
+        from app.views.recipe import RecipeSearchView
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
         app.add_url_rule("/logout", view_func=LogoutView.as_view("logout"))
@@ -51,5 +52,7 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/login/github/callback", view_func=github_callback)
         app.add_url_rule("/login/yandex", view_func=yandex_login)
         app.add_url_rule("/login/yandex/callback", view_func=yandex_callback)
+
+        app.add_url_rule("/meals", view_func=RecipeSearchView.as_view("meal_search"))
 
     return app
