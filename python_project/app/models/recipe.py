@@ -1,6 +1,7 @@
 from app import db
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, Text
+from typing import List
 
 
 class Recipe(db.Model):
@@ -10,6 +11,7 @@ class Recipe(db.Model):
     area : Mapped[str] = mapped_column(String(100))
     instructions : Mapped[str] = mapped_column(Text)
     thumbnail : Mapped[str] = mapped_column(String(100))
+    comments : Mapped[List["Comment"]] = relationship("Comment", backref="recipe", cascade="all, delete")
 
 
     def __repr__(self):

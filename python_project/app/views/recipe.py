@@ -5,6 +5,7 @@ from app.models.recipe import Recipe
 from app.models.user import User
 from app import db
 from flask import session
+from app.forms.comment_form import CommentForm
 
 
 class RecipeDetailView(MethodView):
@@ -30,4 +31,6 @@ class RecipeDetailView(MethodView):
         if "user_id" in session:
             user = User.query.get(session["user_id"])
 
-        return render_template("recipes/detail.html", recipe=recipe, user=user)
+        form = CommentForm()
+
+        return render_template("recipes/detail.html", recipe=recipe, user=user, form=form)

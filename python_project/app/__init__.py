@@ -45,6 +45,7 @@ def create_app(config_class="config.Config"):
         from app.views.auth import RegisterView, LoginView, LogoutView, ProfileOverviewView, ProfileEditView, github_login, github_callback, yandex_login, yandex_callback
         from app.views.recipe import RecipeDetailView
         from app.views.home import HomeView
+        from app.views.comment import CommentCreateView, CommentEditView, CommentDeleteView
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
@@ -59,5 +60,9 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/meals/<int:meal_id>", view_func=RecipeDetailView.as_view("meal_detail"))
 
         app.add_url_rule("/", view_func=HomeView.as_view("home"))
+
+        app.add_url_rule("/recipes/<int:recipe_id>/comments", view_func=CommentCreateView.as_view("comment_create"))
+        app.add_url_rule("/comments/<int:comment_id>/edit", view_func=CommentEditView.as_view("comment_edit"))
+        app.add_url_rule("/comments/<int:comment_id>/delete", view_func=CommentDeleteView.as_view("comment_delete"))
 
     return app

@@ -1,16 +1,22 @@
 import requests
 from app import create_app, db
 from app.models.recipe import Recipe
+import time
 
 app = create_app()
 
 def fetch_all_meals():
     meals = []
     for i in "abcdefghijklmnopqrstuvwxyz":
-        response = requests.get("https://www.themealdb.com/api/json/v1/1/search.php", params={"s" : i})
-        data = response.json()
-        if data["meals"]:
-            meals.extend(data["meals"])
+        try:
+            response = requests.get("https://www.themealdb.com/api/json/v1/1/search.php", params={"s": i}, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            if data["meals"]:
+                meals.extend(data["meals"])
+            time.sleep(1)
+        except requests.RequestException as e:
+            print(f"Error fetching meals for letter '{i}': {e}")
     return meals
 
 def populate():

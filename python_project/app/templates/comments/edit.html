@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Edit Comment</h2>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.content.label }} {{ form.content(class="form-control") }}
+    </div>
+    {{ form.submit(class="btn btn-success") }}
+    <a href="{{ url_for('meal_detail', meal_id=comment.recipe_id) }}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}
