@@ -14,6 +14,7 @@ class User(db.Model):
     oauth_provider = mapped_column(String(20), nullable=True)
     favorites = db.relationship("Recipe", secondary=favorite_table, backref="liked_by")
     comments: Mapped[List["Comment"]] = relationship("Comment", backref="user", cascade="all, delete")
+    recipes: Mapped[List["Recipe"]] = relationship("Recipe", back_populates="author", cascade="all, delete")
 
     def __repr__(self):
         return f"<User {self.username}>"

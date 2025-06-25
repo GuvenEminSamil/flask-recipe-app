@@ -124,8 +124,9 @@ class ProfileOverviewView(MethodView):
             abort(404)
 
         favorite_meals = user.favorites
+        user_recipes = user.recipes
 
-        return render_template("auth/profile.html", user=user, favorites=favorite_meals)
+        return render_template("auth/profile.html", user=user, favorites=favorite_meals, user_recipes=user_recipes)
 
 
 

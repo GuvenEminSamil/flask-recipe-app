@@ -1,7 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
   <h2>{{ recipe.name }}</h2>
-  <img src="{{ recipe.thumbnail }}" class="img-fluid mb-3">
+  {% if recipe.thumbnail %}
+    {% if 'http' in recipe.thumbnail %}
+      <img src="{{ recipe.thumbnail }}" class="img-fluid">
+    {% else %}
+      <img src="{{ url_for('static', filename='uploads/' ~ recipe.thumbnail) }}" class="img-fluid">
+    {% endif %}
+  {% else %}
+    <p>No image available.</p>
+  {% endif %}
+
+
+  {% if recipe.author %}
+    <p class="text-muted">Added by: {{ recipe.author.username }}</p>
+  {% endif %}
+
+  {% if user and user.id == recipe.user_id %}
+    <a href="{{ url_for('recipe_edit', recipe_id=recipe.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
+    <form action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}" method="post" style="display:inline;">
+      <button class="btn btn-sm btn-outline-danger">Delete</button>
+    </form>
+  {% endif %}
+
   <p><strong>Category:</strong> {{ recipe.category }}</p>
   <p><strong>Area:</strong> {{ recipe.area }}</p>
   <h5>Instructions:</h5>

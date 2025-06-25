@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Edit Recipe</h2>
+
+  <form method="post" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.name.label(class="form-label") }}
+      {{ form.name(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.category.label(class="form-label") }}
+      {{ form.category(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.area.label(class="form-label") }}
+      {{ form.area(class="form-control") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.instructions.label(class="form-label") }}
+      {{ form.instructions(class="form-control", rows="5") }}
+    </div>
+
+    <div class="mb-3">
+      {{ form.image.label(class="form-label") }}
+      {{ form.image(class="form-control") }}
+    </div>
+
+    {% if recipe and recipe.thumbnail %}
+      <div class="mb-3">
+        <label class="form-label">Current Image</label><br>
+        {% if 'http' in recipe.thumbnail %}
+          <img src="{{ recipe.thumbnail }}" alt="Current Image" class="img-fluid" style="max-height: 200px;">
+        {% else %}
+          <img src="{{ url_for('static', filename='uploads/' ~ recipe.thumbnail) }}" alt="Current Image" class="img-fluid" style="max-height: 200px;">
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="{{ url_for('meal_detail', meal_id=recipe.id) }}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %}

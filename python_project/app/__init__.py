@@ -46,6 +46,7 @@ def create_app(config_class="config.Config"):
         from app.views.recipe import RecipeDetailView
         from app.views.home import HomeView
         from app.views.comment import CommentCreateView, CommentEditView, CommentDeleteView
+        from app.views.user_recipe import RecipeCreateView, RecipeEditView, RecipeDeleteView
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
@@ -64,5 +65,9 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/recipes/<int:recipe_id>/comments", view_func=CommentCreateView.as_view("comment_create"))
         app.add_url_rule("/comments/<int:comment_id>/edit", view_func=CommentEditView.as_view("comment_edit"))
         app.add_url_rule("/comments/<int:comment_id>/delete", view_func=CommentDeleteView.as_view("comment_delete"))
+
+        app.add_url_rule("/recipes/add", view_func=RecipeCreateView.as_view("recipe_create"))
+        app.add_url_rule("/recipes/<int:recipe_id>/edit", view_func=RecipeEditView.as_view("recipe_edit"))
+        app.add_url_rule("/recipes/<int:recipe_id>/delete", view_func=RecipeDeleteView.as_view("recipe_delete"))
 
     return app

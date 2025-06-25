@@ -11,7 +11,16 @@
     {% for meal in meals %}
       <div class="col-md-4 mb-3">
         <div class="card">
-          <img src="{{ meal.thumbnail }}" class="card-img-top">
+          {% if meal.thumbnail %}
+            {% if 'http' in meal.thumbnail %}
+              <img src="{{ meal.thumbnail }}" class="card-img-top">
+            {% else %}
+              <img src="{{ url_for('static', filename='uploads/' ~ meal.thumbnail) }}" class="card-img-top">
+            {% endif %}
+          {% else %}
+            <p>No image available</p>
+          {% endif %}
+
           <div class="card-body">
             <h5 class="card-title">{{ meal.name }}</h5>
             <p class="card-text">

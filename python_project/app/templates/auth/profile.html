@@ -14,5 +14,15 @@
     <p>You haven't favorited any meals yet.</p>
   {% endif %}
 
+  <h4 class="mt-4">My Recipes</h4>
+  <ul>
+    {% for recipe in user_recipes %}
+      <li><a href="{{ url_for('meal_detail', meal_id=recipe.id) }}">{{ recipe.name }}</a></li>
+    {% else %}
+      <li>No recipes yet.</li>
+    {% endfor %}
+  </ul>
+
+
   <a href="{{ url_for('profile_edit') }}" class="btn btn-outline-primary mt-3">Change Credentials</a>
 {% endblock %}
