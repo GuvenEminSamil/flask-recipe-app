@@ -2,11 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from authlib.integrations.flask_client import OAuth
+from flask_socketio import SocketIO
 
 
 db = SQLAlchemy()
 session = Session()
 oauth = OAuth()
+socketio = SocketIO()
 
 def create_app(config_class="config.Config"):
     app = Flask(__name__)
@@ -48,6 +50,7 @@ def create_app(config_class="config.Config"):
         from app.views.comment import CommentCreateView, CommentEditView, CommentDeleteView
         from app.views.user_recipe import RecipeCreateView, RecipeEditView, RecipeDeleteView
         from app.api.endpoints import api_bp
+        from app.websocket.chat import socketio_bp
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
@@ -72,5 +75,8 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/recipes/<int:recipe_id>/delete", view_func=RecipeDeleteView.as_view("recipe_delete"))
 
         app.register_blueprint(api_bp)
+        app.register_blueprint(socketio_bp)
+
+        socketio.init_app(app)
 
     return app
