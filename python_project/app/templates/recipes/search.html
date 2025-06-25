@@ -15,7 +15,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ meal.strMeal }}</h5>
               <p class="card-text"><strong>Category:</strong> {{ meal.strCategory }}</p>
-              <a href="#" class="btn btn-sm btn-outline-secondary">Details</a>
+              <a href="{{ url_for('meal_detail', meal_id=meal.idMeal) }}" class="btn btn-sm btn-outline-secondary">Details</a>
             </div>
           </div>
         </div>

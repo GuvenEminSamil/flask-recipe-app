@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Meal Not Found</h2>
+  <p>The meal you're looking for could not be found in TheMealDB.</p>
+  <a href="{{ url_for('meal_search') }}" class="btn btn-secondary mt-3">Back to Search</a>
+{% endblock %}
