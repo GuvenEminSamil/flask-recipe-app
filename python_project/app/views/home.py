@@ -9,6 +9,11 @@ class HomeView(MethodView):
 
         page = int(request.args.get("page", 1))
         per_page = 9
+        query = request.args.get("q", "").strip()
 
-        pagination = Recipe.query.order_by(Recipe.name).paginate(page=page, per_page=per_page)
-        return render_template("home.html", meals=pagination.items, pagination=pagination)
+        recipe_query = Recipe.query
+        if query:
+            recipe_query = recipe_query.filter(Recipe.name.ilike(f"%{query}%"))
+
+        pagination = recipe_query.order_by(Recipe.name).paginate(page=page, per_page=per_page)
+        return render_template("home.html", meals=pagination.items, pagination=pagination, query=query)

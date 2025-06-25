@@ -4,13 +4,6 @@ from app.services.meal_service import search_meals_by_name, get_meal_by_id
 from app.models.recipe import Recipe
 from app import db
 
-class RecipeSearchView(MethodView):
-    def get(self):
-        query = request.args.get("q", "")
-        meals = search_meals_by_name(query) if query else[]
-        return render_template("recipes/search.html", meals=meals, query=query)
-
-
 class RecipeDetailView(MethodView):
     def get(self, meal_id):
         recipe = Recipe.query.get(meal_id)
