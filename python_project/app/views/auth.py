@@ -69,25 +69,32 @@ class LogoutView(MethodView):
 
 
 
-class ProfileView(MethodView):
+class ProfileEditView(MethodView):
     def get(self):
         if "user_id" not in session:
             return redirect(url_for("login"))
 
         user = User.query.get(session["user_id"])
+
         if not user:
             abort(404)
 
         form = ProfileForm(obj=user)
-        return render_template("auth/profile.html", form=form)
+        if user.oauth_provider:
+            del form.email
+        return render_template("auth/profile_edit.html", form=form)
 
     def post(self):
         if "user_id" not in session:
             return redirect(url_for("login"))
 
-        form = ProfileForm()
+        form = ProfileForm(request.form)
         if form.validate_on_submit():
             user = User.query.get(session["user_id"])
+
+            if user.oauth_provider:
+                del form.email
+
             if not user:
                 abort(404)
 
@@ -98,10 +105,26 @@ class ProfileView(MethodView):
                 user.password_hash = generate_password_hash(form.password.data)
 
             db.session.commit()
+            session["username"] = user.username
+            session["email"] = user.email
+
             flash("Profile updated.")
             return redirect(url_for("profile"))
 
-        return render_template("auth/profile.html", form=form)
+        return render_template("auth/profile_edit.html", form=form)
+
+class ProfileOverviewView(MethodView):
+    def get(self):
+        if "user_id" not in session:
+            return redirect(url_for("login"))
+
+        user = User.query.get(session["user_id"])
+        if not user:
+            abort(404)
+
+        favorite_meals = []
+
+        return render_template("auth/profile.html", user=user, favorites=favorite_meals)
 
 
 
@@ -109,7 +132,6 @@ class ProfileView(MethodView):
 def github_login():
     session.permanent = True
     redirect_uri = "http://localhost:5000/login/github/callback"
-    print("Session before redirect:", dict(session))
     return oauth.github.authorize_redirect(redirect_uri)
 
 @current_app.route("/login/github/callback")
@@ -123,15 +145,15 @@ def github_callback():
 
     if not user:
         user = User(username=profile.get("login"), email=github_email,
-        password_hash = generate_password_hash(os.urandom(16).hex()))
+        password_hash = generate_password_hash(os.urandom(16).hex()),
+                    oauth_provider="github")
         db.session.add(user)
         db.session.commit()
 
     session["user_id"] = user.id
     session["username"] = user.username
     flash("Logged in with GitHub.", 'success')
-    print("Session on callback:", dict(session))
-    return redirect(url_for("profile"))
+    return redirect(url_for("home"))
 
 
 @current_app.route("/login/yandex")
@@ -152,12 +174,12 @@ def yandex_callback():
     user = User.query.filter_by(email=email).first()
     if not user:
         user = User(username=username, email=email,
-                    password_hash=generate_password_hash(os.urandom(16).hex()))
+                    password_hash=generate_password_hash(os.urandom(16).hex()),
+                    oauth_provider="yandex")
         db.session.add(user)
         db.session.commit()
 
-        session["user_id"] = user.id
-        session["username"] = user.username
-        flash("Logged in with Yandex.", 'success')
-        return redirect(url_for("profile"))
-    return redirect(url_for("login"))
+    session["user_id"] = user.id
+    session["username"] = user.username
+    flash("Logged in with Yandex.", 'success')
+    return redirect(url_for("home"))

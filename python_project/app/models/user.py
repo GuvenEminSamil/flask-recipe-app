@@ -1,6 +1,6 @@
 from app import db
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer
+from sqlalchemy import String, Integer, Boolean
 
 
 class User(db.Model):
@@ -8,6 +8,7 @@ class User(db.Model):
     username : Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     email : Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password_hash : Mapped[str] = mapped_column(String(5000), nullable=False)
+    oauth_provider = mapped_column(String(20), nullable=True)
 
 
     def __repr__(self):

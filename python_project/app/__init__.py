@@ -38,18 +38,19 @@ def create_app(config_class="config.Config"):
         client_kwargs={'scope': 'login:email login:info'}
     )
 
-    with app.app_context():
+    with (app.app_context()):
         from .models import user
         db.create_all()
 
-        from app.views.auth import RegisterView, LoginView, LogoutView, ProfileView, github_login, github_callback, yandex_login, yandex_callback
+        from app.views.auth import RegisterView, LoginView, LogoutView, ProfileOverviewView, ProfileEditView, github_login, github_callback, yandex_login, yandex_callback
         from app.views.recipe import RecipeDetailView
         from app.views.home import HomeView
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
         app.add_url_rule("/logout", view_func=LogoutView.as_view("logout"))
-        app.add_url_rule("/profile", view_func=ProfileView.as_view("profile"))
+        app.add_url_rule("/profile", view_func=ProfileOverviewView.as_view("profile"))
+        app.add_url_rule("/profile/edit", view_func=ProfileEditView.as_view("profile_edit"))
         app.add_url_rule("/login/github", view_func=github_login)
         app.add_url_rule("/login/github/callback", view_func=github_callback)
         app.add_url_rule("/login/yandex", view_func=yandex_login)

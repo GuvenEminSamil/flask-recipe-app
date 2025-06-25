@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Update Profile</h2>
-  <form method="post">
-    {{ form.hidden_tag() }}
-    <div class="mb-3">
-      {{ form.username.label }} {{ form.username(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.email.label }} {{ form.email(class="form-control") }}
-    </div>
-    <div class="mb-3">
-      {{ form.password.label }} {{ form.password(class="form-control") }}
-      <small class="form-text text-muted">Leave blank to keep current password</small>
-    </div>
-    {{ form.submit(class="btn btn-primary") }}
-  </form>
+  <h2>{{ user.username }}'s Profile</h2>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+
+  <h4 class="mt-4">Favorite Meals</h4>
+  {% if favorites %}
+    <ul>
+      {% for meal in favorites %}
+        <li><a href="{{ url_for('meal_detail', meal_id=meal.id) }}">{{ meal.name }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven't favorited any meals yet.</p>
+  {% endif %}
+
+  <a href="{{ url_for('profile_edit') }}" class="btn btn-outline-primary mt-3">Change Credentials</a>
 {% endblock %}
