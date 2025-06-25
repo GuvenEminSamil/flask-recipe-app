@@ -2,7 +2,10 @@ from flask import request, render_template
 from flask.views import MethodView
 from app.services.meal_service import search_meals_by_name, get_meal_by_id
 from app.models.recipe import Recipe
+from app.models.user import User
 from app import db
+from flask import session
+
 
 class RecipeDetailView(MethodView):
     def get(self, meal_id):
@@ -22,4 +25,9 @@ class RecipeDetailView(MethodView):
             )
             db.session.add(recipe)
             db.session.commit()
-        return render_template("recipes/detail.html", recipe=recipe)
+
+        user = None
+        if "user_id" in session:
+            user = User.query.get(session["user_id"])
+
+        return render_template("recipes/detail.html", recipe=recipe, user=user)

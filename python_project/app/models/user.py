@@ -1,6 +1,8 @@
 from app import db
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, Integer, Boolean
+from app.models.recipe import Recipe
+from app.models.favorite import favorite_table
 
 
 class User(db.Model):
@@ -9,6 +11,7 @@ class User(db.Model):
     email : Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     password_hash : Mapped[str] = mapped_column(String(5000), nullable=False)
     oauth_provider = mapped_column(String(20), nullable=True)
+    favorites = db.relationship("Recipe", secondary=favorite_table, backref="liked_by")
 
 
     def __repr__(self):

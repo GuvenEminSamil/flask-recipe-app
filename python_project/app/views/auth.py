@@ -5,6 +5,7 @@ from app.forms.auth_forms import ProfileForm
 import os
 
 from app import db, oauth
+from app.models import Recipe
 from app.models.user import User
 from app.forms.auth_forms import RegisterForm, LoginForm
 
@@ -122,7 +123,7 @@ class ProfileOverviewView(MethodView):
         if not user:
             abort(404)
 
-        favorite_meals = []
+        favorite_meals = user.favorites
 
         return render_template("auth/profile.html", user=user, favorites=favorite_meals)
 
@@ -183,3 +184,26 @@ def yandex_callback():
     session["username"] = user.username
     flash("Logged in with Yandex.", 'success')
     return redirect(url_for("home"))
+
+@current_app.route("/favorite/<int:recipe_id>", methods=["POST"])
+def toggle_favorite(recipe_id):
+    if "user_id" not in session:
+        flash("Login required to favorite meals", "warning")
+        return redirect(url_for("login"))
+
+    user = User.query.get(session["user_id"])
+    recipe = Recipe.query.get(recipe_id)
+
+    if not recipe:
+        flash("Recipe not found", "danger")
+        return redirect(url_for("home"))
+
+    if recipe in user.favorites:
+        user.favorites.remove(recipe)
+        flash("Removed from favorites.", "info")
+    else:
+        user.favorites.append(recipe)
+        flash("Added to favorites.", "success")
+
+    db.session.commit()
+    return redirect(request.referrer or url_for("home"))
