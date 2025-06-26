@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Flask & IDE
+instance/
+.env
+*.sqlite3
+*.log
+
+# Docker
+*.pid
+*.sock
+*.db
+docker-compose.override.yml
+
+# Media/uploads
+app/static/media/
+uploads/
+
+# PyCharm / VSCode
+.idea/
+.vscode/
+
+# Tests
+htmlcov/
+.tox/
+.pytest_cache/
+.coverage
