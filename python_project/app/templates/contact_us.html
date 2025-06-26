@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Contact us via:</h2>
+
+  <ul>
+    {% for item in contacts %}
+      <li>{{ item.content }}</li>
+    {% endfor %}
+  </ul>
+
+  <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}

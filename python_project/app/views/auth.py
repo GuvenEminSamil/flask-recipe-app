@@ -93,7 +93,8 @@ class ProfileEditView(MethodView):
             del form.email
             del form.username
             del form.password
-        return render_template("auth/no_access.html", form=form)
+            return render_template("auth/no_access.html", form=form)
+        return render_template("auth/profile_edit.html", form=form)
 
     def post(self):
         if "user_id" not in session:

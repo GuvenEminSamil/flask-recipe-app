@@ -1,6 +1,6 @@
 from flask import request, render_template
 from flask.views import MethodView
-from app.services.meal_service import search_meals_by_name, get_meal_by_id
+from app.services.meal_service import get_meal_by_id
 from app.models.recipe import Recipe
 from app.models.user import User
 from app import db

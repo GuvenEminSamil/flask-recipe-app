@@ -51,6 +51,7 @@ def create_app(config_class="config.Config"):
         from app.views.user_recipe import RecipeCreateView, RecipeEditView, RecipeDeleteView
         from app.api.endpoints import api_bp
         from app.websocket.chat import socketio_bp
+        from app.views.contact_us import ContactUsView
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
@@ -75,6 +76,7 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/recipes/<int:recipe_id>/delete", view_func=RecipeDeleteView.as_view("recipe_delete"))
 
         app.add_url_rule("/preferences", view_func=PreferencesView.as_view("preferences"))
+        app.add_url_rule("/contact", view_func=ContactUsView.as_view("contact"))
 
         app.register_blueprint(api_bp)
         app.register_blueprint(socketio_bp)
