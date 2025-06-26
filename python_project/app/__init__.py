@@ -1,4 +1,4 @@
-from flask import Flask, session as flask_session
+from flask import Flask, session as flask_session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from authlib.integrations.flask_client import OAuth
@@ -93,5 +93,9 @@ def create_app(config_class="config.Config"):
                 dark_mode = user.preferences.dark_mode
 
         return dict(dark_mode=dark_mode)
+
+    @app.errorhandler(404)
+    def handle_404(e):
+        return jsonify({'error': 'Not found'}), 404
 
     return app
