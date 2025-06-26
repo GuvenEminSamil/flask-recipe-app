@@ -32,7 +32,7 @@ class RegisterView(MethodView):
             )
             db.session.add(user)
             db.session.commit()
-            flash("Registration successful. You can now log in.")
+            flash("Registration successful. You can now log in.", "success")
             return redirect(url_for("login"))
         return render_template("auth/register.html", form=form)
 
@@ -51,7 +51,7 @@ class LoginView(MethodView):
             if user and check_password_hash(user.password_hash, form.password.data):
                 session["user_id"] = user.id
                 session["username"] = user.username
-                flash("Logged in successfully.")
+                flash("Logged in successfully.", "success")
                 if not user.preferences:
                     from app.models.preferences import UserPreferences
                     user.preferences = UserPreferences()
@@ -72,7 +72,7 @@ class LoginView(MethodView):
 class LogoutView(MethodView):
     def get(self):
         session.clear()
-        flash("Logged out.")
+        flash("Logged out.", "success")
         return redirect(url_for("login"))
 
 
@@ -91,7 +91,9 @@ class ProfileEditView(MethodView):
         form = ProfileForm(obj=user)
         if user.oauth_provider:
             del form.email
-        return render_template("auth/profile_edit.html", form=form)
+            del form.username
+            del form.password
+        return render_template("auth/no_access.html", form=form)
 
     def post(self):
         if "user_id" not in session:
@@ -117,7 +119,7 @@ class ProfileEditView(MethodView):
             session["username"] = user.username
             session["email"] = user.email
 
-            flash("Profile updated.")
+            flash("Profile updated.", "success")
             return redirect(url_for("profile"))
 
         return render_template("auth/profile_edit.html", form=form)
@@ -152,7 +154,7 @@ class PreferencesView(MethodView):
             user.preferences.dark_mode = form.dark_mode.data
             db.session.commit()
             flash("Preferences updated", "success")
-        return redirect(url_for("profile"))
+        return redirect(url_for("home"))
 
 
 @current_app.route("/login/github")
