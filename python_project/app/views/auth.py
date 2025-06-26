@@ -20,6 +20,7 @@ class RegisterView(MethodView):
     def post(self):
         form = RegisterForm()
         if form.validate_on_submit():
+
             if User.query.filter_by(username=form.username.data).first():
                 flash("Username already exists.")
                 return render_template("auth/register.html", form=form)
