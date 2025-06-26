@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Live Chat</h2>
-<div id="messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+<h2 class="text-center">Live Chat</h2>
+
+<div id="messages" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: scroll; background-color: #f8f9fa;">
     {% for message in messages %}
-        <div>{{ message.username }}: {{ message.content }}</div>
+        <div><strong>{{ message.username }}</strong>: {{ message.content }}</div>
     {% endfor %}
 </div>
-<input type="text" id="messageInput" placeholder="Type a message..." autofocus>
-<button onclick="sendMessage()">Send</button>
+
+<div class="input-group">
+    <input type="text" id="messageInput" class="form-control" placeholder="Type a message..." autofocus>
+    <button onclick="sendMessage()" class="btn btn-primary">Send</button>
+</div>
 
 <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 <script>
@@ -16,15 +20,18 @@
     socket.on("message", function(msg) {
         const messages = document.getElementById("messages");
         const entry = document.createElement("div");
-        entry.textContent = msg;
+        entry.innerHTML = msg;
         messages.appendChild(entry);
         messages.scrollTop = messages.scrollHeight;
     });
 
     function sendMessage() {
         const input = document.getElementById("messageInput");
-        socket.send(input.value);
-        input.value = "";
+        const message = input.value.trim();
+        if (message !== "") {
+            socket.send(message);
+            input.value = "";
+        }
     }
 
     document.getElementById("messageInput").addEventListener("keypress", function(e) {
