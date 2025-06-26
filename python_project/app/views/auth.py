@@ -3,9 +3,11 @@ from flask.views import MethodView
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.forms.auth_forms import ProfileForm
 import os
+from app.forms.preferences_form import PreferencesForm
 
 from app import db, oauth
 from app.models import Recipe
+from app.models.preferences import UserPreferences
 from app.models.user import User
 from app.forms.auth_forms import RegisterForm, LoginForm
 
@@ -49,6 +51,11 @@ class LoginView(MethodView):
                 session["user_id"] = user.id
                 session["username"] = user.username
                 flash("Logged in successfully.")
+                if not user.preferences:
+                    from app.models.preferences import UserPreferences
+                    user.preferences = UserPreferences()
+                    db.session.commit()
+
                 return redirect(url_for("profile"))
             else:
                 flash("Invalid email or password.", "danger")
@@ -128,6 +135,23 @@ class ProfileOverviewView(MethodView):
 
         return render_template("auth/profile.html", user=user, favorites=favorite_meals, user_recipes=user_recipes)
 
+class PreferencesView(MethodView):
+    def get(self):
+        user = User.query.get(session["user_id"])
+        if not user.preferences:
+            user.preferences = UserPreferences()
+            db.session.commit()
+        form = PreferencesForm(obj=user.preferences)
+        return render_template("auth/preferences.html", form=form)
+
+    def post(self):
+        user = User.query.get(session["user_id"])
+        form = PreferencesForm()
+        if form.validate_on_submit():
+            user.preferences.dark_mode = form.dark_mode.data
+            db.session.commit()
+            flash("Preferences updated", "success")
+        return redirect(url_for("profile"))
 
 
 @current_app.route("/login/github")

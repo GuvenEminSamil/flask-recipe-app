@@ -4,6 +4,7 @@ from sqlalchemy import String, Integer, Boolean
 from app.models.recipe import Recipe
 from app.models.favorite import favorite_table
 from typing import List
+from .preferences import UserPreferences
 
 
 class User(db.Model):
@@ -15,6 +16,8 @@ class User(db.Model):
     favorites = db.relationship("Recipe", secondary=favorite_table, backref="liked_by")
     comments: Mapped[List["Comment"]] = relationship("Comment", backref="user", cascade="all, delete")
     recipes: Mapped[List["Recipe"]] = relationship("Recipe", back_populates="author", cascade="all, delete")
+    preferences: Mapped["UserPreferences"] = relationship("UserPreferences", back_populates="user", uselist=False,
+                                                          cascade="all, delete")
 
     def __repr__(self):
         return f"<User {self.username}>"

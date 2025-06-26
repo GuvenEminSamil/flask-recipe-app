@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session as flask_session
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from authlib.integrations.flask_client import OAuth
@@ -6,7 +6,7 @@ from flask_socketio import SocketIO
 
 
 db = SQLAlchemy()
-session = Session()
+flask_session_ext = Session()
 oauth = OAuth()
 socketio = SocketIO()
 
@@ -15,7 +15,7 @@ def create_app(config_class="config.Config"):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    session.init_app(app)
+    flask_session_ext.init_app(app)
     oauth.init_app(app)
 
     oauth.register(
@@ -44,7 +44,7 @@ def create_app(config_class="config.Config"):
         from .models import user
         db.create_all()
 
-        from app.views.auth import RegisterView, LoginView, LogoutView, ProfileOverviewView, ProfileEditView, github_login, github_callback, yandex_login, yandex_callback
+        from app.views.auth import RegisterView, LoginView, LogoutView, ProfileOverviewView, ProfileEditView, github_login, github_callback, yandex_login, yandex_callback, PreferencesView
         from app.views.recipe import RecipeDetailView
         from app.views.home import HomeView
         from app.views.comment import CommentCreateView, CommentEditView, CommentDeleteView
@@ -74,9 +74,24 @@ def create_app(config_class="config.Config"):
         app.add_url_rule("/recipes/<int:recipe_id>/edit", view_func=RecipeEditView.as_view("recipe_edit"))
         app.add_url_rule("/recipes/<int:recipe_id>/delete", view_func=RecipeDeleteView.as_view("recipe_delete"))
 
+        app.add_url_rule("/preferences", view_func=PreferencesView.as_view("preferences"))
+
         app.register_blueprint(api_bp)
         app.register_blueprint(socketio_bp)
 
         socketio.init_app(app)
+
+    @app.context_processor
+    def inject_user_preferences():
+        from app.models.user import User  # Adjust if necessary
+        user_id = flask_session.get("user_id")
+        dark_mode = False
+
+        if user_id:
+            user = User.query.get(user_id)
+            if user and user.preferences:
+                dark_mode = user.preferences.dark_mode
+
+        return dict(dark_mode=dark_mode)
 
     return app

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center">Preferences</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    
+    <div class="form-check mb-3">
+        {{ form.dark_mode(class="form-check-input") }}
+        {{ form.dark_mode.label(class="form-check-label") }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    <a href="{{ url_for('profile') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
