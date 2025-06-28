@@ -18,6 +18,7 @@ class User(db.Model):
     recipes: Mapped[List["Recipe"]] = relationship("Recipe", back_populates="author", cascade="all, delete")
     preferences: Mapped["UserPreferences"] = relationship("UserPreferences", back_populates="user", uselist=False,
                                                           cascade="all, delete")
+    role : Mapped[bool] = mapped_column(default=False, nullable=False)
 
     def __repr__(self):
         return f"<User {self.username}>"

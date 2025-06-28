@@ -2,8 +2,6 @@ from flask import render_template, redirect, url_for, session, flash, request, a
 from flask.views import MethodView
 from app import db
 from app.models.comment import Comment
-from app.models.recipe import Recipe
-from app.models.user import User
 from app.forms.comment_form import CommentForm
 
 class CommentCreateView(MethodView):

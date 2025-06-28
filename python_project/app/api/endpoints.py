@@ -66,6 +66,23 @@ class CommentCreateAPI(MethodView):
             "recipe_id": comment.recipe_id
         }), 201
 
+    def get(self):
+        query = request.args.get("q", "").strip()
+        comment_query = Comment.query
+
+        if query:
+            comment_query = comment_query.filter(Recipe.name.ilike(f"%{query}%"))
+
+        comment = comment_query.all()
+        return jsonify([
+            {
+                "id": comment.id,
+                "content": comment.content,
+                "user_id": comment.user_id,
+                "recipe_id": comment.recipe_id
+            } for comment in comment
+        ])
+
 
 api_bp.add_url_rule("/recipes", view_func=RecipeListAPI.as_view("recipes"))
 api_bp.add_url_rule("/users/<int:user_id>", view_func=UserDetailAPI.as_view("user_detail"))
