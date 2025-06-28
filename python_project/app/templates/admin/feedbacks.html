@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container mt-4">
+    <h2>All Feedbacks</h2>
+    <ul class="list-group">
+      {% for feedback in feedbacks %}
+        <li class="list-group-item">
+          <strong>{{ feedback.user.username }}</strong> <strong>Title:</strong>{{ feedback.feedback }} <strong>Content:</strong> {{ feedback.title }}
+        </li>
+      {% else %}
+        <li class="list-group-item">No feedbacks found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

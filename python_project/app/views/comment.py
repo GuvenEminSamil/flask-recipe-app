@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, session, flash, request, abort
 from flask.views import MethodView
 from app import db
+from app.models import User
 from app.models.comment import Comment
 from app.forms.comment_form import CommentForm
 
@@ -31,7 +32,8 @@ class CommentEditView(MethodView):
             abort(403)
 
         form = CommentForm(obj=comment)
-        return render_template("comments/edit.html", form=form, comment=comment)
+        user = User.query.get(session.get("user_id"))
+        return render_template("comments/edit.html", form=form, comment=comment, User=user, user=user)
 
     def post(self, comment_id):
         comment = Comment.query.get_or_404(comment_id)

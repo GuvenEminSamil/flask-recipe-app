@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, session,request
 from flask.views import MethodView
-from sqlalchemy.sql.expression import null
 
+from app.models import User
 from app.models.recipe import Recipe
 
 class HomeView(MethodView):
@@ -12,6 +12,7 @@ class HomeView(MethodView):
         page = int(request.args.get("page", 1))
         per_page = 9
         query = request.args.get("q", "").strip()
+        user = User.query.get(session.get("user_id"))
 
         recipe_query = Recipe.query
         if query:
@@ -20,4 +21,4 @@ class HomeView(MethodView):
                 return render_template("recipes/not_found.html")
 
         pagination = recipe_query.order_by(Recipe.name).paginate(page=page, per_page=per_page)
-        return render_template("home.html", meals=pagination.items, pagination=pagination, query=query)
+        return render_template("home.html", meals=pagination.items, pagination=pagination, query=query, User=user, user=user)

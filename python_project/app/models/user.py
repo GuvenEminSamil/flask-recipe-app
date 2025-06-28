@@ -5,6 +5,8 @@ from app.models.recipe import Recipe
 from app.models.favorite import favorite_table
 from typing import List
 from .preferences import UserPreferences
+from app.models.feedback import Feedback
+
 
 
 class User(db.Model):
@@ -19,6 +21,7 @@ class User(db.Model):
     preferences: Mapped["UserPreferences"] = relationship("UserPreferences", back_populates="user", uselist=False,
                                                           cascade="all, delete")
     role : Mapped[bool] = mapped_column(default=False, nullable=False)
+    feedbacks : Mapped[List["Feedback"]] = relationship("Feedback", back_populates="user", cascade="all, delete")
 
     def __repr__(self):
         return f"<User {self.username}>"

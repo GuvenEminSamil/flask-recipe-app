@@ -1,6 +1,7 @@
 from flask import render_template, session, flash, redirect, url_for
 from flask.views import MethodView
 from app import db
+from app.models import User
 from app.models.feedback import Feedback
 from app.forms.feedback_form import FeedbackForm
 
@@ -15,7 +16,8 @@ class FeedbackCreateView(MethodView):
             feedback = Feedback(
                 user_email=form.user_email.data,
                 title=form.title.data,
-                feedback=form.feedback.data
+                feedback=form.feedback.data,
+                user_id=session["user_id"]
             )
             db.session.add(feedback)
             db.session.commit()
@@ -28,4 +30,5 @@ class FeedbackCreateView(MethodView):
             flash("You must be logged in to create a feedback", "danger")
             return redirect(url_for("login"))
 
-        return render_template("feedback.html", form=FeedbackForm())
+        user = User.query.get(session.get("user_id"))
+        return render_template("feedback.html", form=FeedbackForm(), User=user, user=user)

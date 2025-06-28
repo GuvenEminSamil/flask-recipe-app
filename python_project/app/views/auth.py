@@ -83,7 +83,7 @@ class ProfileEditView(MethodView):
         if "user_id" not in session:
             return redirect(url_for("login"))
 
-        user = User.query.get(session["user_id"])
+        user = User.query.get(session.get("user_id"))
 
         if not user:
             abort(404)
@@ -93,8 +93,8 @@ class ProfileEditView(MethodView):
             del form.email
             del form.username
             del form.password
-            return render_template("auth/no_access.html", form=form)
-        return render_template("auth/profile_edit.html", form=form)
+            return render_template("auth/no_access.html", form=form, User=user, user=user)
+        return render_template("auth/profile_edit.html", form=form, User=user, user=user)
 
     def post(self):
         if "user_id" not in session:
@@ -130,23 +130,23 @@ class ProfileOverviewView(MethodView):
         if "user_id" not in session:
             return redirect(url_for("login"))
 
-        user = User.query.get(session["user_id"])
+        user = User.query.get(session.get("user_id"))
         if not user:
             abort(404)
 
         favorite_meals = user.favorites
         user_recipes = user.recipes
 
-        return render_template("auth/profile.html", user=user, favorites=favorite_meals, user_recipes=user_recipes)
+        return render_template("auth/profile.html", User=user, favorites=favorite_meals, user_recipes=user_recipes, user=user)
 
 class PreferencesView(MethodView):
     def get(self):
-        user = User.query.get(session["user_id"])
+        user = User.query.get(session.get("user_id"))
         if not user.preferences:
             user.preferences = UserPreferences()
             db.session.commit()
         form = PreferencesForm(obj=user.preferences)
-        return render_template("auth/preferences.html", form=form)
+        return render_template("auth/preferences.html", form=form, User=user, user=user)
 
     def post(self):
         user = User.query.get(session["user_id"])

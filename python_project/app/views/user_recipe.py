@@ -1,5 +1,7 @@
 from flask import render_template, redirect, url_for, session, flash, abort, current_app
 from flask.views import MethodView
+
+from app.models import User
 from app.models.recipe import Recipe
 from app.forms.recipe_form import RecipeForm
 from app import db
@@ -12,7 +14,8 @@ class RecipeCreateView(MethodView):
             return redirect(url_for("login"))
 
         form = RecipeForm()
-        return render_template("recipes/create.html", form=form)
+        user = User.query.get(session.get("user_id"))
+        return render_template("recipes/create.html", form=form, User=user, user=user)
 
     def post(self):
         if "user_id" not in session:
@@ -47,7 +50,8 @@ class RecipeEditView(MethodView):
         if recipe.user_id != session.get("user_id"):
             abort(403)
         form = RecipeForm(obj=recipe)
-        return render_template("recipes/edit.html", form=form, recipe=recipe)
+        user = User.query.get(session.get("user_id"))
+        return render_template("recipes/edit.html", form=form, recipe=recipe, User=user, user=user)
 
     def post(self, recipe_id):
         recipe = Recipe.query.get_or_404(recipe_id)

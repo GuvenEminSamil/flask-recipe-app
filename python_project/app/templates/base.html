@@ -20,6 +20,9 @@
                         <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
                         <li class="nav-item"><a class="nav-link" href="/feedback">Feedback</a></li>
                         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% if user and user.role %}
+                        <a class="btn btn-warning" href="{{ url_for('admin_feedbacks') }}">Admin Panel</a>
+                    {% endif %}
                     {% else %}
                         <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
                         <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>

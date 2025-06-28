@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import render_template
 from flask.views import MethodView
 from app.services.meal_service import get_meal_by_id
 from app.models.recipe import Recipe
@@ -27,10 +27,8 @@ class RecipeDetailView(MethodView):
             db.session.add(recipe)
             db.session.commit()
 
-        user = None
-        if "user_id" in session:
-            user = User.query.get(session["user_id"])
+        user = User.query.get(session.get("user_id"))
 
         form = CommentForm()
 
-        return render_template("recipes/detail.html", recipe=recipe, user=user, form=form)
+        return render_template("recipes/detail.html", recipe=recipe, user=user, form=form, User=user)

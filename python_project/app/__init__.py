@@ -52,6 +52,7 @@ def create_app(config_class="config.Config"):
         from app.api.endpoints import api_bp
         from app.websocket.chat import socketio_bp
         from app.views.feedback import FeedbackCreateView
+        from app.views.admin import AdminFeedbackView
 
         app.add_url_rule("/register", view_func=RegisterView.as_view("register"))
         app.add_url_rule("/login", view_func=LoginView.as_view("login"))
@@ -77,6 +78,7 @@ def create_app(config_class="config.Config"):
 
         app.add_url_rule("/preferences", view_func=PreferencesView.as_view("preferences"))
         app.add_url_rule("/feedback", view_func=FeedbackCreateView.as_view("feedback_create"))
+        app.add_url_rule("/admin/feedbacks", view_func=AdminFeedbackView.as_view("admin_feedbacks"))
 
         app.register_blueprint(api_bp)
         app.register_blueprint(socketio_bp)
@@ -85,7 +87,7 @@ def create_app(config_class="config.Config"):
 
     @app.context_processor
     def inject_user_preferences():
-        from app.models.user import User  # Adjust if necessary
+        from app.models.user import User
         user_id = flask_session.get("user_id")
         dark_mode = False
 
