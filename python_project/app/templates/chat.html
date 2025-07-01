@@ -2,14 +2,14 @@
 {% block content %}
 <h2 class="text-center">Live Chat</h2>
 
-<div id="messages" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: scroll; background-color: #f8f9fa;">
+<div id="messages" class="border rounded p-3 mb-3 {{ 'bg-dark text-light' if dark_mode else 'bg-light' }}" style="height: 400px; overflow-y: scroll;">
     {% for message in messages %}
         <div><strong>{{ message.username }}</strong>: {{ message.content }}</div>
     {% endfor %}
 </div>
 
 <div class="input-group">
-    <input type="text" id="messageInput" class="form-control" placeholder="Type a message..." autofocus>
+    <input type="text" id="messageInput" class="form-control" placeholder="Type a message" autofocus>
     <button onclick="sendMessage()" class="btn btn-primary">Send</button>
 </div>
 

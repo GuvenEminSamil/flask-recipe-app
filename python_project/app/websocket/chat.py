@@ -7,7 +7,7 @@ socketio_bp = Blueprint("socket", __name__)
 
 @socketio_bp.route("/chat")
 def chat():
-    username = session.get("username", "Guest")
+    username = session.get("username")
     messages = Message.query.order_by(Message.timestamp.asc()).limit(100).all()
     user = User.query.get(session.get("user_id"))
     return render_template("chat.html", username=username, messages=messages, User=user, user=user)

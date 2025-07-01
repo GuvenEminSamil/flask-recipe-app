@@ -10,8 +10,3 @@ def get_meal_by_id(meal_id):
     response = requests.get(f"{API_BASE}/lookup.php", params={"i": meal_id})
     meals = response.json().get("meals",[])
     return meals[0] if meals else None
-
-def get_random_meal():
-    response = requests.get(f"{API_BASE}/random.php")
-    meals = response.json().get("meals",[])
-    return meals[0] if meals else None
